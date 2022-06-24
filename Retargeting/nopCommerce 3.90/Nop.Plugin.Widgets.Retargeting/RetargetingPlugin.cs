@@ -377,18 +377,22 @@ namespace Nop.Plugin.Widgets.Retargeting
                     sb.Append(currentProduct.StockQuantity);
                     sb.Append(separator);
 
-                    
+                    if (priceWithDiscount <= 0)
+                    {
+                        priceWithDiscount = price;
+                    }
 
-                    if (price == 0)
-                        price = priceWithDiscount;
+                    price = Convert.ToDecimal(Regex.Replace(String.Format("{0:0.00}", price), "([0-9]+),([0-9]{1,2})$", "$1.$2"));
+
+                    priceWithDiscount = Convert.ToDecimal(Regex.Replace(String.Format("{0:0.00}", priceWithDiscount), "([0-9]+),([0-9]{1,2})$", "$1.$2"));
 
                     sb.Append($"\"{price}\"");
-                    //sb.Append(price.ToString(new CultureInfo("en-US", false).NumberFormat));
+                    //sb.Append($"\"{price.ToString(new CultureInfo("en-US", false).NumberFormat)}\"");
                     sb.Append(separator);
 
                     //sale price
                     sb.Append($"\"{priceWithDiscount}\"");
-                    //sb.Append(priceWithDiscount.ToString(new CultureInfo("en-US", false).NumberFormat));
+                    //sb.Append($"\"{priceWithDiscount.ToString(new CultureInfo("en-US", false).NumberFormat)}\"");
                     sb.Append(separator);
 
                     //brand
@@ -515,18 +519,11 @@ namespace Nop.Plugin.Widgets.Retargeting
                         priceBase= _taxService.GetProductPrice(product, product.OldPrice, out taxRate);
                         priceWithDiscountBase = _taxService.GetProductPrice(product, _priceCalculationService.GetFinalPrice(product, _workContext.CurrentCustomer, includeDiscounts: true), out taxRate);
 
-
-                        if (priceWithDiscountBase == 0)
+                        if (priceBase <= 0)
                         {
-                            priceWithDiscountBase = priceBase;
+                            priceBase = priceWithDiscountBase;
+                            priceWithDiscountBase = 0;
                         }
-
-                        if (priceBase != 0)
-                        {
-                            priceBase = Convert.ToDecimal(Regex.Replace(String.Format("{0:0.00}", priceBase), "([0-9]+),([0-9]{1,2})$", "$1.$2"));
-                        }
-
-                        priceWithDiscountBase = Convert.ToDecimal(Regex.Replace(String.Format("{0:0.00}", priceWithDiscountBase), "([0-9]+),([0-9]{1,2})$", "$1.$2"));
                     }
                 }
             }

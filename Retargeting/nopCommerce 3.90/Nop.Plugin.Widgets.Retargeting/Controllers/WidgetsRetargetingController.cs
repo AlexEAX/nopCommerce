@@ -662,8 +662,8 @@ namespace Nop.Plugin.Widgets.Retargeting.Controllers
             }
             catch (Exception exc)
             {
-                ErrorNotification(exc.Message);
-                _logger.Error(exc.Message, exc);
+                //ErrorNotification(exc.Message);
+                //_logger.Error(exc.Message, exc);
 
                 outPut.Add("status", false);
                 outPut.Add("error", exc);
